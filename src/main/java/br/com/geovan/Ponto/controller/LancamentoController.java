@@ -1,6 +1,6 @@
 package br.com.geovan.Ponto.controller;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +19,7 @@ public class LancamentoController
 	LancamentoService service;
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamento)
+	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamento)
 	{
 		return service.inserir(dataHoraLancamento);
 	}
@@ -31,8 +31,14 @@ public class LancamentoController
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT)
-	public ResultBaseFactoryTO atualizar(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamentoAntigo, @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamentoNovo)
+	public ResultBaseFactoryTO atualizar(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamentoAntigo, @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamentoNovo)
 	{
 		return service.atualizar(dataHoraLancamentoAntigo, dataHoraLancamentoNovo);
+	}
+	
+	@RequestMapping(method = RequestMethod.DELETE)
+	public ResultBaseFactoryTO deletar (@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamento)
+	{
+		return service.delete(dataHoraLancamento);
 	}
 }

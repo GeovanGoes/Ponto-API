@@ -11,7 +11,7 @@ public class PontoApplication
 	
 	void started()
 	{
-		TimeZone.setDefault(TimeZone.getTimeZone("TimeZone"));
+		//TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
 	
 	public static void main(String[] args) 

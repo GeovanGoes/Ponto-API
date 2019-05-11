@@ -1,6 +1,8 @@
 package br.com.geovan.Ponto.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -17,16 +19,16 @@ public class Lancamento implements Serializable
 	@GeneratedValue
 	private Long id;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date dataHoraLancamento;
+	private LocalDateTime dataHoraLancamento;
 	
 	
 	public Lancamento() 
 	{
 	}
 	
-	public Lancamento(Date dataHoraLancamento) 
+	public Lancamento(LocalDateTime dataHoraLancamento) 
 	{
+		
 		super();
 		this.dataHoraLancamento = dataHoraLancamento;
 	}
@@ -41,12 +43,12 @@ public class Lancamento implements Serializable
 		this.id = id;
 	}
 
-	public Date getDataHoraLancamento()
+	public LocalDateTime getDataHoraLancamento()
 	{
 		return dataHoraLancamento;
 	}
 
-	public void setDataHoraLancamento(Date dataHoraLancamento)
+	public void setDataHoraLancamento(LocalDateTime dataHoraLancamento)
 	{
 		this.dataHoraLancamento = dataHoraLancamento;
 	}
