@@ -3,16 +3,16 @@
  */
 package br.com.geovan.Ponto;
 
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
@@ -25,12 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import br.com.geovan.Ponto.controller.LancamentoController;
 import br.com.geovan.Ponto.model.Lancamento;
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
-
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author geovan.goes
