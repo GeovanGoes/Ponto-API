@@ -25,7 +25,7 @@ repositories {
 	maven { url 'https://repo.spring.io/milestone' }
 }
 
-mainClassName 'br.com.geovan.Ponto.PontoApplication'
+
 
 sourceCompatibility = '12'
 targetCompatibility = '12'
