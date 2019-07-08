@@ -16,7 +16,6 @@ apply plugin: 'io.spring.dependency-management'
 
 bootJar {
     baseName = 'ponto'
-    version =  '0.1.0'
 }
 
 repositories {
