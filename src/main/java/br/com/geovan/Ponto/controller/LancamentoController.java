@@ -1,6 +1,8 @@
 package br.com.geovan.Ponto.controller;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,11 +20,17 @@ public class LancamentoController
 {
 	@Autowired
 	LancamentoService service;
+
+	@ModelAttribute
+	LocalDateTime initLocalDateTime()
+	{
+		return LocalDateTime.now();
+	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamento)
+	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute Date dataHoraLancamento)
 	{
-		return service.inserir(dataHoraLancamento);
+		return service.inserir(LocalDateTime.ofInstant(dataHoraLancamento.toInstant(), ZoneId.systemDefault()));
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
