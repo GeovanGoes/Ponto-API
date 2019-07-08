@@ -20,17 +20,19 @@ public class LancamentoController
 {
 	@Autowired
 	LancamentoService service;
-
-	@ModelAttribute
-	LocalDateTime initLocalDateTime()
-	{
-		return LocalDateTime.now();
-	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamento)
 	{
-		return service.inserir(LocalDateTime.ofInstant(dataHoraLancamento.toInstant(), ZoneId.systemDefault()));
+		return service.inserir(convertDateToLocalDateTime(dataHoraLancamento));
+	}
+
+	/**
+	 * @param dataHoraLancamento
+	 * @return
+	 */
+	private LocalDateTime convertDateToLocalDateTime(Date dataHoraLancamento) {
+		return LocalDateTime.ofInstant(dataHoraLancamento.toInstant(), ZoneId.systemDefault());
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -40,14 +42,14 @@ public class LancamentoController
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT)
-	public ResultBaseFactoryTO atualizar(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamentoAntigo, @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamentoNovo)
+	public ResultBaseFactoryTO atualizar(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamentoAntigo, @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamentoNovo)
 	{
-		return service.atualizar(dataHoraLancamentoAntigo, dataHoraLancamentoNovo);
+		return service.atualizar(convertDateToLocalDateTime(dataHoraLancamentoAntigo), convertDateToLocalDateTime(dataHoraLancamentoNovo));
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE)
-	public ResultBaseFactoryTO deletar (@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamento)
+	public ResultBaseFactoryTO deletar (@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamento)
 	{
-		return service.delete(dataHoraLancamento);
+		return service.delete(convertDateToLocalDateTime(dataHoraLancamento));
 	}
 }
