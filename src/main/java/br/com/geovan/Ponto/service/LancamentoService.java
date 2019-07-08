@@ -4,13 +4,19 @@ import br.com.geovan.Ponto.model.Lancamento;
 import br.com.geovan.Ponto.repository.LancamentoRepository;
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 
+
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,19 +58,20 @@ public class LancamentoService
 		
 		if (todosLancamentos != null)
 		{
-			Map<LocalDate, List<LocalTime>> lancs = new HashMap<>();
+			DateTimeFormatter ofPattern = DateTimeFormatter.ofPattern("HH:mm");
+			Map<LocalDate, List<String>> lancs = new HashMap<>();
 			todosLancamentos.forEach(lancamento -> {
 				LocalDate date = lancamento.getDataHoraLancamento().toLocalDate();
 				if(lancs.containsKey(date))
 				{
-					List<LocalTime> list = lancs.get(date);
-					list.add(lancamento.getDataHoraLancamento().toLocalTime());
+					List<String> list = lancs.get(date);
+					list.add(lancamento.getDataHoraLancamento().toLocalTime().format(ofPattern));
 					lancs.put(date, list);
 				}
 				else
 				{
-					List<LocalTime> horas = new ArrayList<>();
-					horas.add(lancamento.getDataHoraLancamento().toLocalTime());
+					List<String> horas = new ArrayList<>();
+					horas.add(lancamento.getDataHoraLancamento().toLocalTime().format(ofPattern));
 					lancs.put(date, horas);
 				}
 			});
