@@ -18,12 +18,6 @@ public class LancamentoController
 {
 	@Autowired
 	LancamentoService service;
-
-	@ModelAttribute
-	LocalDateTime initLocalDateTime()
-	{
-		return LocalDateTime.now();
-	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamento)
