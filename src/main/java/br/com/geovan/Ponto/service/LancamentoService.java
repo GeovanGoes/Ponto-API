@@ -1,6 +1,12 @@
 package br.com.geovan.Ponto.service;
 
+import br.com.geovan.Ponto.model.Lancamento;
+import br.com.geovan.Ponto.repository.LancamentoRepository;
+import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,10 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import br.com.geovan.Ponto.model.Lancamento;
-import br.com.geovan.Ponto.repository.LancamentoRepository;
-import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 
 @Service
 public class LancamentoService 
@@ -50,10 +52,25 @@ public class LancamentoService
 		
 		if (todosLancamentos != null)
 		{
-			List<LocalDateTime> lancamentos = new ArrayList<LocalDateTime>();
-			
+			Map<LocalDate, List<LocalTime>> lancs = new HashMap<>();
+			List<LocalDateTime> lancamentosFromDatabase = new ArrayList<LocalDateTime>();
+			lancamentosFromDatabase.forEach(lancamento -> {
+				LocalDate date = lancamento.toLocalDate();
+				if(lancs.containsKey(date))
+				{
+					List<LocalTime> list = lancs.get(date);
+					list.add(lancamento.toLocalTime());
+					lancs.put(date, list);
+				}
+				else
+				{
+					List<LocalTime> horas = new ArrayList<>();
+					horas.add(lancamento.toLocalTime());
+					lancs.put(date, horas);
+				}
+			});
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("lancamentos", todosLancamentos);
+			map.put("lancamentos", lancs);
 			response.setSuccess(map);	
 		}
 		else
