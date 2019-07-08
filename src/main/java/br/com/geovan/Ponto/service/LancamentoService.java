@@ -2,12 +2,10 @@ package br.com.geovan.Ponto.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +31,7 @@ public class LancamentoService
 				response.setSuccess(new HashMap<String, Object>());
 		}
 		else
-			response.addErrorMessage("Data inválida", "Data inválida");
+			response.addErrorMessage("Data invalida", "Data invalida");
 		return response;
 	}
 	
@@ -55,7 +53,7 @@ public class LancamentoService
 			response.setSuccess(map);	
 		}
 		else
-			response.addErrorMessage("não foi possível obter a lista de lancamentos", "não foi possível obter a lista de lancamentos");
+			response.addErrorMessage("nao foi possivel obter a lista de lancamentos", "nao foi possivel obter a lista de lancamentos");
 		return response;
 	}
 	
@@ -83,13 +81,13 @@ public class LancamentoService
 					response.setSuccess(map);				
 				}
 				else
-					response.addErrorMessage("não foi possível atualizar o lancamento", "não foi possível atualizar o lancamento");
+					response.addErrorMessage("nao foi possivel atualizar o lancamento", "nao foi possivel atualizar o lancamento");
 			}
 			else
-				response.addErrorMessage("não existe um lancamento com a data/hora informada", "não existe um lancamento com a data/hora informada");
+				response.addErrorMessage("nao existe um lancamento com a data/hora informada", "nao existe um lancamento com a data/hora informada");
 		}
 		else
-			response.addErrorMessage("parametros inválidos", "parametros inválidos");
+			response.addErrorMessage("parametros invalidos", "parametros invalidos");
 		
 		return response;
 	}
@@ -110,7 +108,7 @@ public class LancamentoService
 			response.setSuccess(new HashMap<String, Object>());
 		}
 		else
-			response.addErrorMessage("lancamento não encontrado", "lancamento não encontrado");
+			response.addErrorMessage("lancamento nao encontrado", "lancamento nao encontrado");
 		
 		return response;
 	}

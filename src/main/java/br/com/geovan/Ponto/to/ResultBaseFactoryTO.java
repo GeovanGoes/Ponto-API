@@ -6,18 +6,18 @@ import java.util.Map;
 
 /***
  * 
- * @author geovan.goes Classe responsável por padronizar a comunicação
+ * @author geovan.goes Classe responsavel por padronizar a comunicacao
  * 
  */
 public class ResultBaseFactoryTO implements Serializable
 {
 	/**
-	 * Número usado para identificar a classe no processo de serialização
+	 * Numero usado para identificar a classe no processo de serializacao
 	 */
 	private static final long serialVersionUID = -9025976238031174022L;
 
 	/***
-	 * Atributos estáticos usados como chaves para a conversão
+	 * Atributos estaticos usados como chaves para a conversao
 	 */
 	private static final String RESULT_BASE_FACTORY_ERROR_MESSAGES = "ResultBaseFactoryErrorMessages";
 	private static final String RESULT_BASE_FACTORY_SUCCESS = "ResultBaseFactorySuccess";
@@ -46,7 +46,7 @@ public class ResultBaseFactoryTO implements Serializable
 	{
 	}
 
-	/** Construtor privado para inicialização de um novo objeto de dentro dessa classe */
+	/** Construtor privado para inicializacao de um novo objeto de dentro dessa classe */
 	private ResultBaseFactoryTO(Map<String, Object> result, Map<String, String> errorMessages, boolean success)
 	{
 		this.result = result;
@@ -110,7 +110,7 @@ public class ResultBaseFactoryTO implements Serializable
 	}
 
 	/***
-	 * Método responsável por converter o ResultBaseFactory em um Map<String, Object> que pode ser ertornado pela camada Service
+	 * Metodo responsavel por converter o ResultBaseFactory em um Map<String, Object> que pode ser retornado pela camada Service
 	 * 
 	 * @return
 	 */
@@ -124,7 +124,7 @@ public class ResultBaseFactoryTO implements Serializable
 	}
 
 	/***
-	 * Método responsável por converter o Map<String, Object> obtido através da camada Service para um ResultBaseFactory
+	 * Metodo responsavel por converter o Map<String, Object> obtido atraves da camada Service para um ResultBaseFactory
 	 * 
 	 * @param serviceResponse
 	 * @return
