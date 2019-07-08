@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 @Service
 public class LancamentoService 
 {
+	Logger _log = LoggerFactory.getLogger(LancamentoService.class);
+	
 	@Autowired
 	LancamentoRepository repository;
 
@@ -24,8 +28,8 @@ public class LancamentoService
 		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
 		if (dataHora != null)
 		{
-			System.out.println("inserindo lancamento...");
-			System.out.println(dataHora);			
+			_log.info("inserindo lancamento...");
+			_log.info(dataHora.toString());			
 			Lancamento saved = repository.save(new Lancamento(dataHora));
 			if (saved != null)
 				response.setSuccess(new HashMap<String, Object>());
