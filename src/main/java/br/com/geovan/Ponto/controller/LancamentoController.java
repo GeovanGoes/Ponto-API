@@ -28,7 +28,7 @@ public class LancamentoController
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute Date dataHoraLancamento)
+	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") Date dataHoraLancamento)
 	{
 		return service.inserir(LocalDateTime.ofInstant(dataHoraLancamento.toInstant(), ZoneId.systemDefault()));
 	}
