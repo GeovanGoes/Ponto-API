@@ -53,19 +53,18 @@ public class LancamentoService
 		if (todosLancamentos != null)
 		{
 			Map<LocalDate, List<LocalTime>> lancs = new HashMap<>();
-			List<LocalDateTime> lancamentosFromDatabase = new ArrayList<LocalDateTime>();
-			lancamentosFromDatabase.forEach(lancamento -> {
-				LocalDate date = lancamento.toLocalDate();
+			todosLancamentos.forEach(lancamento -> {
+				LocalDate date = lancamento.getDataHoraLancamento().toLocalDate();
 				if(lancs.containsKey(date))
 				{
 					List<LocalTime> list = lancs.get(date);
-					list.add(lancamento.toLocalTime());
+					list.add(lancamento.getDataHoraLancamento().toLocalTime());
 					lancs.put(date, list);
 				}
 				else
 				{
 					List<LocalTime> horas = new ArrayList<>();
-					horas.add(lancamento.toLocalTime());
+					horas.add(lancamento.getDataHoraLancamento().toLocalTime());
 					lancs.put(date, horas);
 				}
 			});
