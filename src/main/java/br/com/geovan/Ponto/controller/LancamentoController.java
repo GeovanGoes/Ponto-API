@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +19,14 @@ public class LancamentoController
 	@Autowired
 	LancamentoService service;
 
+	@ModelAttribute
+	LocalDateTime initLocalDateTime()
+	{
+		return LocalDateTime.now();
+	}
+	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamento)
+	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamento)
 	{
 		return service.inserir(dataHoraLancamento);
 	}
@@ -31,13 +38,13 @@ public class LancamentoController
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT)
-	public ResultBaseFactoryTO atualizar(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamentoAntigo, @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamentoNovo)
+	public ResultBaseFactoryTO atualizar(@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamentoAntigo, @DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamentoNovo)
 	{
 		return service.atualizar(dataHoraLancamentoAntigo, dataHoraLancamentoNovo);
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE)
-	public ResultBaseFactoryTO deletar (@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") LocalDateTime dataHoraLancamento)
+	public ResultBaseFactoryTO deletar (@DateTimeFormat(pattern="yyyy-MM-dd HH:mm") @ModelAttribute LocalDateTime dataHoraLancamento)
 	{
 		return service.delete(dataHoraLancamento);
 	}
