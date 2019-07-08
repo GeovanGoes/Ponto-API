@@ -1,19 +1,34 @@
-plugins {
-	id 'org.springframework.boot' version '2.2.0.BUILD-SNAPSHOT'
-	id 'java'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+    }
 }
 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-group = 'br.com.geovan'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '12'
+
+bootJar {
+    baseName = 'ponto'
+    version =  '0.1.0'
+}
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 	maven { url 'https://repo.spring.io/snapshot' }
 	maven { url 'https://repo.spring.io/milestone' }
 }
+
+mainClassName 'br.com.geovan.Ponto.PontoApplication'
+
+sourceCompatibility = '12'
+targetCompatibility = '12'
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
