@@ -54,7 +54,7 @@ public class LancamentoService
 	public ResultBaseFactoryTO listar()
 	{
 		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
-		Iterable<Lancamento> todosLancamentos = repository.findAllOrderByDataHoraLancamentoAsc();
+		Iterable<Lancamento> todosLancamentos = repository.findAllOrderByDataHoraLancamento();
 		
 		if (todosLancamentos != null)
 		{

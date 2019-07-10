@@ -25,5 +25,5 @@ public interface LancamentoRepository extends CrudRepository<Lancamento, Long>
 	 * 
 	 * @return
 	 */
-	List<Lancamento> findAllOrderByDataHoraLancamentoAsc();
+	List<Lancamento> findAllOrderByDataHoraLancamento();
 }
