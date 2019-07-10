@@ -14,6 +14,9 @@ Criar um serviço responsável pelo lançamento de horários.
  - Read   ✔
  - Update ✔
  - Delete ✔
+ 
+ API DOC
+ https://documenter.getpostman.com/view/3926739/SVSGMpZi?version=latest
 
 ### Release 2
 
