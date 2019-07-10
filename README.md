@@ -1,4 +1,5 @@
 # Ponto
+![](https://img.shields.io/badge/build-passing-green.svg) ![](https://img.shields.io/badge/coverage-70%25-yellowgreen.svg) ![](https://img.shields.io/badge/dependencies-up%20to%20date-green.svg)
 
 Ponto é um projeto de estudo. 
 
