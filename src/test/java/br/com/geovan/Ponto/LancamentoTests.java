@@ -7,6 +7,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import br.com.geovan.Ponto.controller.LancamentoController;
+import br.com.geovan.Ponto.model.Lancamento;
+import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
+import br.com.geovan.Ponto.util.DateUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,15 +20,12 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import br.com.geovan.Ponto.controller.LancamentoController;
-import br.com.geovan.Ponto.model.Lancamento;
-import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 
 /**
  * @author geovan.goes
@@ -37,6 +38,14 @@ public class LancamentoTests
 {
 	@Autowired
 	LancamentoController lancamentosController;
+	
+	DateUtil dateUtil;
+	
+	@Before
+	public void antes()
+	{
+		dateUtil = new DateUtil();
+	}
 	
 	@Test
 	public void deveInserirComSucesso()
@@ -61,7 +70,7 @@ public class LancamentoTests
 	private ResultBaseFactoryTO inserirLancamentoDeAgora()
 	{
 		LocalDateTime dataHoraLancamento = LocalDateTime.now();
-		ResultBaseFactoryTO response = lancamentosController.inserir(dataHoraLancamento);
+		ResultBaseFactoryTO response = lancamentosController.inserir(dateUtil.localDateTimeToDate(dataHoraLancamento));
 		return response;
 	}
 	
@@ -95,7 +104,7 @@ public class LancamentoTests
 	private LocalDateTime asserttionParaInsercaoComDataAgora()
 	{
 		LocalDateTime dataHoraLancamento = LocalDateTime.now();
-		ResultBaseFactoryTO responseInserir = lancamentosController.inserir(dataHoraLancamento);
+		ResultBaseFactoryTO responseInserir = lancamentosController.inserir(dateUtil.localDateTimeToDate(dataHoraLancamento));
 		
 		assertNotNull(responseInserir);
 		assertTrue(responseInserir.isSuccess());
@@ -107,7 +116,7 @@ public class LancamentoTests
 	{
 		LocalDateTime now = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO deletarResponse = lancamentosController.deletar(now);
+		ResultBaseFactoryTO deletarResponse = lancamentosController.deletar(dateUtil.localDateTimeToDate(now));
 		
 		assertNotNull(deletarResponse);
 		assertTrue(deletarResponse.isSuccess());		
@@ -130,7 +139,7 @@ public class LancamentoTests
 	{
 		LocalDateTime now = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(now, now.plusMinutes(1));
+		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), dateUtil.localDateTimeToDate(now.plusMinutes(1)));
 		
 		assertNotNull(atualizarResponse);
 		assertTrue(atualizarResponse.isSuccess());
@@ -141,7 +150,7 @@ public class LancamentoTests
 	{
 		LocalDateTime now = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(now, null);
+		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), null);
 		
 		assertNotNull(atualizarResponse);
 		assertFalse(atualizarResponse.isSuccess());
@@ -153,7 +162,7 @@ public class LancamentoTests
 	{
 		LocalDateTime now = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(now.plusYears(100), now);
+		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now.plusYears(100)), dateUtil.localDateTimeToDate(now));
 		
 		assertNotNull(atualizarResponse);
 		assertFalse(atualizarResponse.isSuccess());

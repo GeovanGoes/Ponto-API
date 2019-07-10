@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar build/libs/ponto.jar
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar build/libs/ponto.jar --spring.config.location=classpath:heroku-db.properties

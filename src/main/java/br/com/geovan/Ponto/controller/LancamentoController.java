@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.geovan.Ponto.service.LancamentoService;
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
+import br.com.geovan.Ponto.util.DateUtil;
 
 @RestController
 @RequestMapping("/lancamentos")
@@ -31,8 +32,9 @@ public class LancamentoController
 	 * @param dataHoraLancamento
 	 * @return
 	 */
-	private LocalDateTime convertDateToLocalDateTime(Date dataHoraLancamento) {
-		return LocalDateTime.ofInstant(dataHoraLancamento.toInstant(), ZoneId.systemDefault());
+	private LocalDateTime convertDateToLocalDateTime(Date dataHoraLancamento) 
+	{
+		return new DateUtil().dateToLocalDateTime(dataHoraLancamento);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
