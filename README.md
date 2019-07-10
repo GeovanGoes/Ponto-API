@@ -1,7 +1,5 @@
 # Ponto
 
-https://img.shields.io/badge/build-passing-green.svg
-
 Ponto é um projeto de estudo. 
 
 A intenção é desenvolver uma ferramenta de marcação de ponto digital, para facilitar o controle de horas do funcionário.
