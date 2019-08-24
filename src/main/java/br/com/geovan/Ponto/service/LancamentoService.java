@@ -1,23 +1,28 @@
 package br.com.geovan.Ponto.service;
 
+import br.com.geovan.Ponto.model.Lancamento;
+import br.com.geovan.Ponto.repository.LancamentoRepository;
+import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
+import br.com.geovan.Ponto.util.DateUtil;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.util.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import br.com.geovan.Ponto.model.Lancamento;
-import br.com.geovan.Ponto.repository.LancamentoRepository;
-import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 
 @Service
 public class LancamentoService 
 {
+	Logger _log = LoggerFactory.getLogger(LancamentoService.class);
+	
 	@Autowired
 	LancamentoRepository repository;
 
@@ -26,14 +31,14 @@ public class LancamentoService
 		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
 		if (dataHora != null)
 		{
-			System.out.println("inserindo lancamento...");
-			System.out.println(dataHora);			
+			_log.info("inserindo lancamento...");
+			_log.info(dataHora.toString());			
 			Lancamento saved = repository.save(new Lancamento(dataHora));
 			if (saved != null)
 				response.setSuccess(new HashMap<String, Object>());
 		}
 		else
-			response.addErrorMessage("Data inválida", "Data inválida");
+			response.addErrorMessage("Data invalida", "Data invalida");
 		return response;
 	}
 	
@@ -44,18 +49,33 @@ public class LancamentoService
 	public ResultBaseFactoryTO listar()
 	{
 		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
-		Iterable<Lancamento> todosLancamentos = repository.findAll();
+		Iterable<Lancamento> todosLancamentos = repository.findAllByOrderByDataHoraLancamento();
 		
 		if (todosLancamentos != null)
 		{
-			List<LocalDateTime> lancamentos = new ArrayList<LocalDateTime>();
-			
+			DateTimeFormatter ofPattern = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_PATTERN_FOR_TIME);
+			Map<LocalDate, List<String>> lancs = new HashMap<>();
+			todosLancamentos.forEach(lancamento -> {
+				LocalDate date = lancamento.getDataHoraLancamento().toLocalDate();
+				if(lancs.containsKey(date))
+				{
+					List<String> list = lancs.get(date);
+					list.add(lancamento.getDataHoraLancamento().toLocalTime().format(ofPattern));
+					lancs.put(date, list);
+				}
+				else
+				{
+					List<String> horas = new ArrayList<>();
+					horas.add(lancamento.getDataHoraLancamento().toLocalTime().format(ofPattern));
+					lancs.put(date, horas);
+				}
+			});
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("lancamentos", todosLancamentos);
+			map.put("lancamentos", lancs);
 			response.setSuccess(map);	
 		}
 		else
-			response.addErrorMessage("não foi possível obter a lista de lancamentos", "não foi possível obter a lista de lancamentos");
+			response.addErrorMessage("nao foi possivel obter a lista de lancamentos", "nao foi possivel obter a lista de lancamentos");
 		return response;
 	}
 	
@@ -83,13 +103,13 @@ public class LancamentoService
 					response.setSuccess(map);				
 				}
 				else
-					response.addErrorMessage("não foi possível atualizar o lancamento", "não foi possível atualizar o lancamento");
+					response.addErrorMessage("nao foi possivel atualizar o lancamento", "nao foi possivel atualizar o lancamento");
 			}
 			else
-				response.addErrorMessage("não existe um lancamento com a data/hora informada", "não existe um lancamento com a data/hora informada");
+				response.addErrorMessage("nao existe um lancamento com a data/hora informada", "nao existe um lancamento com a data/hora informada");
 		}
 		else
-			response.addErrorMessage("parametros inválidos", "parametros inválidos");
+			response.addErrorMessage("parametros invalidos", "parametros invalidos");
 		
 		return response;
 	}
@@ -110,7 +130,7 @@ public class LancamentoService
 			response.setSuccess(new HashMap<String, Object>());
 		}
 		else
-			response.addErrorMessage("lancamento não encontrado", "lancamento não encontrado");
+			response.addErrorMessage("lancamento nao encontrado", "lancamento nao encontrado");
 		
 		return response;
 	}

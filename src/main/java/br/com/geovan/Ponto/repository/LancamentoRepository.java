@@ -1,6 +1,7 @@
 package br.com.geovan.Ponto.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -19,4 +20,10 @@ public interface LancamentoRepository extends CrudRepository<Lancamento, Long>
 	 * @return
 	 */
 	Lancamento getLancamentoByDataHoraLancamento(LocalDateTime dataHoraLancamento);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	List<Lancamento> findAllByOrderByDataHoraLancamento();
 }

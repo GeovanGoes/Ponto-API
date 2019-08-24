@@ -1,4 +1,5 @@
 # Ponto
+![](https://img.shields.io/badge/build-passing-green.svg) ![](https://img.shields.io/badge/coverage-70%25-yellowgreen.svg) ![](https://img.shields.io/badge/dependencies-up%20to%20date-green.svg)
 
 Ponto é um projeto de estudo. 
 
@@ -14,6 +15,9 @@ Criar um serviço responsável pelo lançamento de horários.
  - Read   ✔
  - Update ✔
  - Delete ✔
+ 
+ API DOC
+ https://documenter.getpostman.com/view/3926739/SVSGMpZi?version=latest
 
 ### Release 2
 
