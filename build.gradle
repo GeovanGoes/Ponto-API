@@ -38,4 +38,5 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testCompile group: 'org.assertj', name: 'assertj-core', version: '1.2.0'
+	runtimeOnly 'com.h2database:h2'
 }
