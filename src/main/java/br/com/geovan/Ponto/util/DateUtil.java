@@ -35,4 +35,5 @@ public class DateUtil
 	
 	public static final String DEFAULT_PATTERN_FOR_DATE_TIME = "yyyy-MM-dd HH:mm";
 	public static final String DEFAULT_PATTERN_FOR_TIME = "HH:mm";
+	public static final String DEFAULT_PATTERN_FOR_DATE = "dd-MM-yyyy";
 }

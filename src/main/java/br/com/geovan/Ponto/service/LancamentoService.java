@@ -2,6 +2,7 @@ package br.com.geovan.Ponto.service;
 
 import br.com.geovan.Ponto.model.Lancamento;
 import br.com.geovan.Ponto.repository.LancamentoRepository;
+import br.com.geovan.Ponto.to.Dia;
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 import br.com.geovan.Ponto.util.DateUtil;
 
@@ -10,8 +11,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,25 +56,33 @@ public class LancamentoService
 		
 		if (todosLancamentos != null)
 		{
-			DateTimeFormatter ofPattern = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_PATTERN_FOR_TIME);
+			DateTimeFormatter timePattern = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_PATTERN_FOR_TIME);
 			Map<LocalDate, List<String>> lancs = new HashMap<>();
+
 			todosLancamentos.forEach(lancamento -> {
 				LocalDate date = lancamento.getDataHoraLancamento().toLocalDate();
 				if(lancs.containsKey(date))
 				{
 					List<String> list = lancs.get(date);
-					list.add(lancamento.getDataHoraLancamento().toLocalTime().format(ofPattern));
+					list.add(lancamento.getDataHoraLancamento().toLocalTime().format(timePattern));
 					lancs.put(date, list);
 				}
 				else
 				{
 					List<String> horas = new ArrayList<>();
-					horas.add(lancamento.getDataHoraLancamento().toLocalTime().format(ofPattern));
+					horas.add(lancamento.getDataHoraLancamento().toLocalTime().format(timePattern));
 					lancs.put(date, horas);
 				}
 			});
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("lancamentos", lancs);
+			
+			Set<Dia> dias = new HashSet<>();
+			DateTimeFormatter datePattern = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_PATTERN_FOR_DATE);
+			
+			lancs.keySet().forEach(key -> {
+				dias.add(new Dia(key.format(datePattern), lancs.get(key)));
+			});
+			map.put("lancamentos", dias);
 			response.setSuccess(map);	
 		}
 		else

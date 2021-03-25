@@ -13,14 +13,14 @@ import java.util.List;
  */
 public class Dia 
 {
-	private LocalDate data;
-	private List<LocalTime> registros;
+	private String data;
+	private List<String> registros;
 	
 	/**
 	 * @param data
 	 * @param registros
 	 */
-	public Dia(LocalDate data, List<LocalTime> registros) {
+	public Dia(String data, List<String> registros) {
 		super();
 		this.data = data;
 		this.registros = registros;
@@ -28,25 +28,25 @@ public class Dia
 	/**
 	 * @return the data
 	 */
-	public LocalDate getData() {
+	public String getData() {
 		return data;
 	}
 	/**
 	 * @param data the data to set
 	 */
-	public void setData(LocalDate data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 	/**
 	 * @return the registros
 	 */
-	public List<LocalTime> getRegistros() {
+	public List<String> getRegistros() {
 		return registros;
 	}
 	/**
 	 * @param registros the registros to set
 	 */
-	public void setRegistros(List<LocalTime> registros) {
+	public void setRegistros(List<String> registros) {
 		this.registros = registros;
 	}
 }
