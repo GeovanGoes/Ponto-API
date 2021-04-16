@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -cp target/classes:target/dependency/* br.com.geovan.Ponto.PontoApplication
+web: java $JAVA_OPTS -Dserver.port=$PORT -cp target/classes:target/dependency/* br.com.geovan.Ponto.PontoApplication --spring.config.location=classpath:/application-heroku.yml

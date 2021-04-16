@@ -1,0 +1,21 @@
+server:
+  servlet:
+    context-path: /api
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    initialSize: 5
+    maxActive: 10
+    maxIdle: 5
+    minIdle: 2
+    removeAbandoned: true
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true

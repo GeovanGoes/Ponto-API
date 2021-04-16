@@ -11,7 +11,7 @@ import java.util.List;
  * @author geovan.goes
  *
  */
-public class Dia 
+public class Dia implements Comparable<Dia>
 {
 	private String data;
 	private List<String> registros;
@@ -49,4 +49,14 @@ public class Dia
 	public void setRegistros(List<String> registros) {
 		this.registros = registros;
 	}
+	
+	@Override
+	public int compareTo(Dia o) {
+		if (o == null)
+			return 1;
+		else
+			return o.getData().compareTo(this.getData());
+	}
+	
+	
 }

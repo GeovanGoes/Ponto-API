@@ -7,15 +7,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import br.com.geovan.Ponto.controller.LancamentoController;
-import br.com.geovan.Ponto.model.Lancamento;
-import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
-import br.com.geovan.Ponto.util.DateUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -25,7 +20,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import br.com.geovan.Ponto.controller.LancamentoController;
+import br.com.geovan.Ponto.model.Lancamento;
+import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
+import br.com.geovan.Ponto.util.DateUtil;
 
 /**
  * @author geovan.goes
@@ -79,18 +81,11 @@ public class LancamentoTests
 	{
 		LocalDateTime dataHoraLancamento = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO responseListar = lancamentosController.listar();
-		assertNotNull(responseListar);
-		assertTrue(responseListar.isSuccess());
+		ResponseEntity<?> responseListar = lancamentosController.listar();
+		assertNotNull(responseListar.getBody());
+		assertTrue(responseListar.getStatusCode().equals(HttpStatus.OK));
 		
-		Map<String, Object> result = responseListar.getResult();
-		assertNotNull(result);
-		assertTrue(result.containsKey("lancamentos"));
-		
-		Object objectLancamentos = result.get("lancamentos");
-		assertNotNull(objectLancamentos);
-		
-		List<Lancamento> lista = (ArrayList<Lancamento>) objectLancamentos;
+		List<Lancamento> lista = (ArrayList<Lancamento>) responseListar.getBody();
 		assertNotNull(lista);
 		
 		List<Lancamento> collect = lista.stream().filter(lancamento -> lancamento.getDataHoraLancamento().equals(dataHoraLancamento)).collect(Collectors.toList());
