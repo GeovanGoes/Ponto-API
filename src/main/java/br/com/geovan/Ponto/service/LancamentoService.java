@@ -1,5 +1,6 @@
 package br.com.geovan.Ponto.service;
 
+import br.com.geovan.Ponto.exception.EmptyResultException;
 import br.com.geovan.Ponto.model.Lancamento;
 import br.com.geovan.Ponto.repository.LancamentoRepository;
 import br.com.geovan.Ponto.to.Dia;
@@ -10,11 +11,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +52,10 @@ public class LancamentoService
 	/***
 	 * 
 	 * @return
+	 * @throws EmptyResultException 
 	 */
-	public ResultBaseFactoryTO listar()
+	public List<Dia> listar() throws EmptyResultException
 	{
-		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
 		Iterable<Lancamento> todosLancamentos = repository.findAllByOrderByDataHoraLancamento();
 		
 		if (todosLancamentos != null)
@@ -74,7 +78,6 @@ public class LancamentoService
 					lancs.put(date, horas);
 				}
 			});
-			Map<String, Object> map = new HashMap<String, Object>();
 			
 			Set<Dia> dias = new HashSet<>();
 			DateTimeFormatter datePattern = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_PATTERN_FOR_DATE);
@@ -82,12 +85,13 @@ public class LancamentoService
 			lancs.keySet().forEach(key -> {
 				dias.add(new Dia(key.format(datePattern), lancs.get(key)));
 			});
-			map.put("lancamentos", dias);
-			response.setSuccess(map);	
+			
+			List<Dia> list = dias.stream().collect(Collectors.toList());
+			Collections.sort(list);
+			return list;
 		}
 		else
-			response.addErrorMessage("nao foi possivel obter a lista de lancamentos", "nao foi possivel obter a lista de lancamentos");
-		return response;
+			throw new EmptyResultException();
 	}
 	
 	/***
