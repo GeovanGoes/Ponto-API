@@ -106,7 +106,7 @@ public class Dia implements Comparable<Dia>
 		if (o == null)
 			return 1;
 		else
-			return o.getLocalDate().compareTo(o.getLocalDate());
+			return o.getLocalDate().compareTo(this.getLocalDate());
 	}
 	
 	
