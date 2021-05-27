@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import br.com.geovan.Ponto.client.SelfClient;
 
-@Configuration
-@EnableScheduling
+//@Configuration
+//@EnableScheduling
 public class KeepYourselfAlive {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(KeepYourselfAlive.class);
@@ -18,7 +18,7 @@ public class KeepYourselfAlive {
 	@Autowired
 	private SelfClient client;
 	
-	@Scheduled(cron = "${application.scheduled.keepyourselfalive.cron:0 */1 * * * ?}")
+	//@Scheduled(cron = "${application.scheduled.keepyourselfalive.cron:0 */1 * * * ?}")
 	public void process () {
 		System.out.println("Comecando");
 		client.callMe();
