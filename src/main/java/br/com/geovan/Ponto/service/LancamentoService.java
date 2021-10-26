@@ -9,6 +9,7 @@ import br.com.geovan.Ponto.util.DateUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,30 +61,28 @@ public class LancamentoService
 		
 		if (todosLancamentos != null)
 		{
-			DateTimeFormatter timePattern = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_PATTERN_FOR_TIME);
-			Map<LocalDate, List<String>> lancs = new HashMap<>();
+			Map<LocalDate, List<LocalTime>> lancs = new HashMap<>();
 
 			todosLancamentos.forEach(lancamento -> {
 				LocalDate date = lancamento.getDataHoraLancamento().toLocalDate();
 				if(lancs.containsKey(date))
 				{
-					List<String> list = lancs.get(date);
-					list.add(lancamento.getDataHoraLancamento().toLocalTime().format(timePattern));
+					List<LocalTime> list = lancs.get(date);
+					list.add(lancamento.getDataHoraLancamento().toLocalTime());
 					lancs.put(date, list);
 				}
 				else
 				{
-					List<String> horas = new ArrayList<>();
-					horas.add(lancamento.getDataHoraLancamento().toLocalTime().format(timePattern));
+					List<LocalTime> horas = new ArrayList<>();
+					horas.add(lancamento.getDataHoraLancamento().toLocalTime());
 					lancs.put(date, horas);
 				}
 			});
 			
 			Set<Dia> dias = new HashSet<>();
-			DateTimeFormatter datePattern = DateTimeFormatter.ofPattern(DateUtil.DEFAULT_PATTERN_FOR_DATE);
 			
 			lancs.keySet().forEach(key -> {
-				dias.add(new Dia(key.format(datePattern), lancs.get(key)));
+				dias.add(new Dia(key, lancs.get(key)));
 			});
 			
 			List<Dia> list = dias.stream().collect(Collectors.toList());
