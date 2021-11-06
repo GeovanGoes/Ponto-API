@@ -8,9 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +21,6 @@ import br.com.geovan.Ponto.exception.EmptyResultException;
 import br.com.geovan.Ponto.service.LancamentoService;
 import br.com.geovan.Ponto.to.Dia;
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
-import br.com.geovan.Ponto.util.DateUtil;
 import io.restassured.http.ContentType;
 
 
@@ -43,7 +40,7 @@ public class LancamentoControllerTest {
 		standaloneSetup(this.controller);
 	}
 	
-	/**Testes sobre o método listar*/
+	/**Testes sobre o metodo listar*/
 	
 	@Test
 	public void deveRetornarSucesso_QuandoListarOsLancamentos() throws EmptyResultException {
@@ -84,24 +81,83 @@ public class LancamentoControllerTest {
 	}
 
 	
-	/**Testes do método inserir**/
+	/**Testes do metodo inserir**/
 	
 	@Test
 	public void deveRetornarSucesso_QuandoInserirUmLancamento() {
-		ResultBaseFactoryTO resultBaseFactoryTO = new ResultBaseFactoryTO();
-		resultBaseFactoryTO.setSuccess(new HashMap<>());
+		ResultBaseFactoryTO resultBaseFactoryTO = getBaseFactorySuccess();
 		
-		LocalDateTime now = LocalDateTime.now();
-		when(this.service.inserir(now)).thenReturn(resultBaseFactoryTO);
-		Map<String, Date> data = new HashMap<>();
-		data.put("dataHoraLancamento", new Date());
+		when(this.service.inserir(LocalDateTime.of(LocalDate.of(2021, 2, 22), LocalTime.of(10, 30)))).thenReturn(resultBaseFactoryTO);
 		
 		given()
 			.accept(ContentType.JSON)
+			.param("dataHoraLancamento", "2021-02-22 10:30" )
 		.when()
-			.post(CONTROLLER_PATH, data)
+			.post(CONTROLLER_PATH)
 		.then()
 			.statusCode(HttpStatus.CREATED.value());
+	}
+	
+	@Test
+	public void deveRetornarFalha_QuandoInserirUmLancamentoInvalido() {
+		when(this.service.inserir(LocalDateTime.of(LocalDate.of(2021, 2, 22), LocalTime.of(10, 30)))).thenReturn(new ResultBaseFactoryTO());
+		
+		given()
+			.accept(ContentType.JSON)
+			.param("dataHoraLancamento", "" )
+		.when()
+			.post(CONTROLLER_PATH)
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void deveRetornarFalha_QuandoNaoInserirUmLancamento() {
+		when(this.service.inserir(LocalDateTime.of(LocalDate.of(2021, 2, 22), LocalTime.of(10, 30)))).thenReturn(new ResultBaseFactoryTO());
+		
+		given()
+			.accept(ContentType.JSON)
+			.param("dataHoraLancamento", "2021-02-22 10:30" )
+		.when()
+			.post(CONTROLLER_PATH)
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	/**Testes do metodo atualizar**/
+	
+	@Test
+	public void deveRetornarSucesso_QuandoUmLancamentoForAtualizado() {
+		when(this.service.atualizar(LocalDateTime.of(LocalDate.of(2021, 2, 22), LocalTime.of(10, 30)), LocalDateTime.of(LocalDate.of(2021, 2, 22), LocalTime.of(10, 31)))).thenReturn(getBaseFactorySuccess());
+		
+		given()
+			.accept(ContentType.JSON)
+			.param("dataHoraLancamentoAntigo", "2021-02-22 10:30" )
+			.param("dataHoraLancamentoNovo", "2021-02-22 10:31")
+		.when()
+			.put(CONTROLLER_PATH)
+		.then()
+			.statusCode(HttpStatus.OK.value());
+	}
+	
+	@Test
+	public void deveRetornarFalha_QuandoUmLancamentoNaoForAtualizado() {
+		when(this.service.atualizar(LocalDateTime.of(LocalDate.of(2021, 2, 22), LocalTime.of(10, 30)), LocalDateTime.of(LocalDate.of(2021, 2, 22), LocalTime.of(10, 30)))).thenReturn(new ResultBaseFactoryTO());
+		
+		given()
+			.accept(ContentType.JSON)
+			.param("dataHoraLancamentoAntigo", "2021-02-22 10:30" )
+			.param("dataHoraLancamentoNovo", "2021-02-22 10:30")
+		.when()
+			.put(CONTROLLER_PATH)
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+
+	private ResultBaseFactoryTO getBaseFactorySuccess() {
+		ResultBaseFactoryTO resultBaseFactoryTO = new ResultBaseFactoryTO();
+		resultBaseFactoryTO.setSuccess(new HashMap<>());
+		return resultBaseFactoryTO;
 	}
 	
 }

@@ -19,8 +19,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
@@ -31,9 +36,14 @@ public class LancamentoController
 	@Autowired
 	LancamentoService service;
 	
-	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<?> inserir(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento)
+	@PostMapping
+	public ResponseEntity<?> inserir(@RequestParam @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento)
 	{
+		if (dataHoraLancamento == null) {
+			ResultBaseFactoryTO to = new ResultBaseFactoryTO();
+			to.addErrorMessage("Data invalida", "Data invalida");
+			return ResponseEntity.badRequest().body(to.getErrorMessages());
+		}
 		ResultBaseFactoryTO resultBaseFactoryTO = service.inserir(convertDateToLocalDateTime(dataHoraLancamento));
 		if (resultBaseFactoryTO.isSuccess())
 			return ResponseEntity.created(null).build();
@@ -50,7 +60,7 @@ public class LancamentoController
 		return new DateUtil().dateToLocalDateTime(dataHoraLancamento);
 	}
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	public ResponseEntity<?> listar()
 	{
 		try {
@@ -63,7 +73,7 @@ public class LancamentoController
 		}
 	}
 	
-	@RequestMapping(method = RequestMethod.PUT)
+	@PutMapping
 	public ResponseEntity<?> atualizar(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoAntigo, @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoNovo)
 	{
 		ResultBaseFactoryTO atualizar = service.atualizar(convertDateToLocalDateTime(dataHoraLancamentoAntigo), convertDateToLocalDateTime(dataHoraLancamentoNovo));
@@ -74,7 +84,7 @@ public class LancamentoController
 			return ResponseEntity.badRequest().body(atualizar.getErrorMessages());
 	}
 	
-	@RequestMapping(method = RequestMethod.DELETE)
+	@DeleteMapping
 	public ResultBaseFactoryTO deletar (@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento)
 	{
 		return service.delete(convertDateToLocalDateTime(dataHoraLancamento));
