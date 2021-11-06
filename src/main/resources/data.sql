@@ -1,9 +1,1 @@
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (9, '2021-03-16 12:39:26.330');
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (2, '2021-03-09 12:39:26.330');
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (3, '2021-03-10 12:39:26.330');
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (7, '2021-03-14 12:39:26.330');
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (4, '2021-03-11 12:39:26.330');
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (6, '2021-03-13 12:39:26.330');
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (5, '2021-03-12 12:39:26.330');
-INSERT INTO lancamento (id, data_hora_lancamento) VALUES (1, '2021-03-08 12:39:26.330');
 INSERT INTO lancamento (id, data_hora_lancamento) VALUES (8, '2021-03-15 12:39:26.330');

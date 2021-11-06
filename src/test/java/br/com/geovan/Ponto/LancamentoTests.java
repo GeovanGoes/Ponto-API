@@ -5,12 +5,14 @@ package br.com.geovan.Ponto;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -52,35 +54,39 @@ public class LancamentoTests
 	@Test
 	public void deveInserirComSucesso()
 	{
-		ResultBaseFactoryTO response = inserirLancamentoDeAgora();
+		ResponseEntity<?> response = inserirLancamentoDeAgora();
 		assertNotNull(response);
-		assertTrue(response.isSuccess());
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
 	@Test
 	public void deveInserirComFalha()
 	{
-		ResultBaseFactoryTO response = lancamentosController.inserir(null);
-		assertNotNull(response);
-		assertFalse(response.isSuccess());
-		assertTrue(response.getErrorMessages().containsKey("Data inválida"));
+		ResponseEntity<?> responseEntity = lancamentosController.inserir(null);
+		assertNotNull(responseEntity);
+		assertNotEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		assertTrue(obterListaDeErrosDoResponse(responseEntity).containsKey("Data invalida"));
+	}
+
+	private Map<String, String> obterListaDeErrosDoResponse(ResponseEntity<?> responseEntity) {
+		Map<String, String> mapped = (Map<String, String>)responseEntity.getBody();
+		return mapped;
 	}
 	
 	/**
 	 * @return
 	 */
-	private ResultBaseFactoryTO inserirLancamentoDeAgora()
+	private ResponseEntity<?> inserirLancamentoDeAgora()
 	{
 		LocalDateTime dataHoraLancamento = LocalDateTime.now();
-		ResultBaseFactoryTO response = lancamentosController.inserir(dateUtil.localDateTimeToDate(dataHoraLancamento));
-		return response;
+		ResponseEntity<?> inserir = lancamentosController.inserir(dateUtil.localDateTimeToDate(dataHoraLancamento));
+		return inserir;
 	}
 	
 	@Test
 	public void deveListarInseridos()
-	{
-		LocalDateTime dataHoraLancamento = asserttionParaInsercaoComDataAgora();
-		
+	{	
+		inserirLancamentoDeAgora();
 		ResponseEntity<?> responseListar = lancamentosController.listar();
 		assertNotNull(responseListar.getBody());
 		assertTrue(responseListar.getStatusCode().equals(HttpStatus.OK));
@@ -88,9 +94,8 @@ public class LancamentoTests
 		List<Lancamento> lista = (ArrayList<Lancamento>) responseListar.getBody();
 		assertNotNull(lista);
 		
-		List<Lancamento> collect = lista.stream().filter(lancamento -> lancamento.getDataHoraLancamento().equals(dataHoraLancamento)).collect(Collectors.toList());
+		assertNotEquals(0, lista.size());
 		
-		assertEquals(1, collect.size());
 	}
 
 	/**
@@ -99,10 +104,10 @@ public class LancamentoTests
 	private LocalDateTime asserttionParaInsercaoComDataAgora()
 	{
 		LocalDateTime dataHoraLancamento = LocalDateTime.now();
-		ResultBaseFactoryTO responseInserir = lancamentosController.inserir(dateUtil.localDateTimeToDate(dataHoraLancamento));
+		ResponseEntity<?> response = lancamentosController.inserir(dateUtil.localDateTimeToDate(dataHoraLancamento));
 		
-		assertNotNull(responseInserir);
-		assertTrue(responseInserir.isSuccess());
+		assertNotNull(response);
+		assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		return dataHoraLancamento;
 	}
 	
@@ -134,10 +139,10 @@ public class LancamentoTests
 	{
 		LocalDateTime now = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), dateUtil.localDateTimeToDate(now.plusMinutes(1)));
+		ResponseEntity<?> atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), dateUtil.localDateTimeToDate(now.plusMinutes(1)));
 		
 		assertNotNull(atualizarResponse);
-		assertTrue(atualizarResponse.isSuccess());
+		assertEquals(HttpStatus.OK, atualizarResponse.getStatusCode());
 	}
 	
 	@Test
@@ -145,22 +150,24 @@ public class LancamentoTests
 	{
 		LocalDateTime now = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), null);
+		ResponseEntity<?> response = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), null);
 		
-		assertNotNull(atualizarResponse);
-		assertFalse(atualizarResponse.isSuccess());
-		assertTrue(atualizarResponse.getErrorMessages().containsKey("parametros inválidos"));
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertTrue(obterListaDeErrosDoResponse(response).containsKey("parametros invalidos"));
 	}
 	
 	@Test
-	public void deveAtualizarComFalhaLancamentoInexistente()
+	public void deveAtualizarComFalha_LancamentoInexistente()
 	{
 		LocalDateTime now = asserttionParaInsercaoComDataAgora();
 		
-		ResultBaseFactoryTO atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now.plusYears(100)), dateUtil.localDateTimeToDate(now));
+		ResponseEntity<?> response = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now.plusYears(100)), dateUtil.localDateTimeToDate(now));
 		
-		assertNotNull(atualizarResponse);
-		assertFalse(atualizarResponse.isSuccess());
-		assertTrue(atualizarResponse.getErrorMessages().containsKey("não existe um lancamento com a data/hora informada"));
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertTrue(obterListaDeErrosDoResponse(response).containsKey("nao existe um lancamento com a data/hora informada"));
 	}
 }

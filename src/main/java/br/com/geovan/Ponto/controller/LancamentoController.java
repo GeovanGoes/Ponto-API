@@ -8,9 +8,11 @@ import br.com.geovan.Ponto.to.Dia;
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 import br.com.geovan.Ponto.util.DateUtil;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,9 +32,13 @@ public class LancamentoController
 	LancamentoService service;
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ResultBaseFactoryTO inserir(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento)
+	public ResponseEntity<?> inserir(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento)
 	{
-		return service.inserir(convertDateToLocalDateTime(dataHoraLancamento));
+		ResultBaseFactoryTO resultBaseFactoryTO = service.inserir(convertDateToLocalDateTime(dataHoraLancamento));
+		if (resultBaseFactoryTO.isSuccess())
+			return ResponseEntity.created(null).build();
+		else
+			return ResponseEntity.badRequest().body(resultBaseFactoryTO.getErrorMessages());
 	}
 
 	/**
@@ -58,9 +64,14 @@ public class LancamentoController
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT)
-	public ResultBaseFactoryTO atualizar(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoAntigo, @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoNovo)
+	public ResponseEntity<?> atualizar(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoAntigo, @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoNovo)
 	{
-		return service.atualizar(convertDateToLocalDateTime(dataHoraLancamentoAntigo), convertDateToLocalDateTime(dataHoraLancamentoNovo));
+		ResultBaseFactoryTO atualizar = service.atualizar(convertDateToLocalDateTime(dataHoraLancamentoAntigo), convertDateToLocalDateTime(dataHoraLancamentoNovo));
+		
+		if (atualizar.isSuccess())
+			return ResponseEntity.ok().build();
+		else
+			return ResponseEntity.badRequest().body(atualizar.getErrorMessages());
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE)

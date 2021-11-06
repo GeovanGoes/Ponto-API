@@ -9,11 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PontoApplication 
 {
 	
-	void started()
-	{
-		//TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-	}
-	
 	public static void main(String[] args) 
 	{
 		System.out.println(TimeZone.getDefault());
