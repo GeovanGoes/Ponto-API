@@ -1,15 +1,12 @@
 package br.com.geovan.Ponto.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.ManyToOne;
 
 
 @Entity
@@ -21,16 +18,20 @@ public class Lancamento implements Serializable
 	
 	private LocalDateTime dataHoraLancamento;
 	
+	@ManyToOne
+	private Usuario usuario;
+	
 	
 	public Lancamento() 
 	{
 	}
 	
-	public Lancamento(LocalDateTime dataHoraLancamento) 
+	public Lancamento(LocalDateTime dataHoraLancamento, Usuario usuario) 
 	{
 		
 		super();
 		this.dataHoraLancamento = dataHoraLancamento;
+		this.usuario = usuario;
 	}
 
 	public Long getId()
@@ -51,6 +52,14 @@ public class Lancamento implements Serializable
 	public void setDataHoraLancamento(LocalDateTime dataHoraLancamento)
 	{
 		this.dataHoraLancamento = dataHoraLancamento;
+	}
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	
 	

@@ -1,19 +1,10 @@
 package br.com.geovan.Ponto.service;
 
-import br.com.geovan.Ponto.exception.EmptyResultException;
-import br.com.geovan.Ponto.model.Lancamento;
-import br.com.geovan.Ponto.repository.LancamentoRepository;
-import br.com.geovan.Ponto.to.Dia;
-import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
-import br.com.geovan.Ponto.util.DateUtil;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +17,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.geovan.Ponto.exception.EmptyResultException;
+import br.com.geovan.Ponto.model.Lancamento;
+import br.com.geovan.Ponto.model.Usuario;
+import br.com.geovan.Ponto.repository.LancamentoRepository;
+import br.com.geovan.Ponto.to.Dia;
+import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
+import br.com.geovan.Ponto.util.ErrorsEnum;
+
 @Service
 public class LancamentoService 
 {
@@ -34,16 +33,20 @@ public class LancamentoService
 	@Autowired
 	LancamentoRepository repository;
 
-	public ResultBaseFactoryTO inserir(LocalDateTime dataHora)
+	public ResultBaseFactoryTO inserir(LocalDateTime dataHora, Usuario usuario)
 	{
 		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
 		if (dataHora != null)
 		{
-			_log.info("inserindo lancamento...");
-			_log.info(dataHora.toString());			
-			Lancamento saved = repository.save(new Lancamento(dataHora));
-			if (saved != null)
-				response.setSuccess(new HashMap<String, Object>());
+			Lancamento exists = repository.getLancamentoByDataHoraLancamentoAndUsuario(dataHora, usuario);
+			if (exists != null) {
+				_log.info("inserindo lancamento...");
+				_log.info(dataHora.toString());			
+				Lancamento saved = repository.save(new Lancamento(dataHora, usuario));
+				if (saved != null)
+					response.setSuccess(new HashMap<String, Object>());				
+			} else
+				return ResultBaseFactoryTO.getReponseWithSingleError(ErrorsEnum.LANCAMENTO_DUPLICADO);
 		}
 		else
 			response.addErrorMessage("Data invalida", "Data invalida");
@@ -52,12 +55,13 @@ public class LancamentoService
 	
 	/***
 	 * 
+	 * @param usuario 
 	 * @return
 	 * @throws EmptyResultException 
 	 */
-	public List<Dia> listar() throws EmptyResultException
+	public List<Dia> listar(Usuario usuario) throws EmptyResultException
 	{
-		Iterable<Lancamento> todosLancamentos = repository.findAllByOrderByDataHoraLancamento();
+		Iterable<Lancamento> todosLancamentos = repository.findAllByUsuarioOrderByDataHoraLancamento(usuario);
 		
 		if (todosLancamentos != null)
 		{
@@ -97,15 +101,16 @@ public class LancamentoService
 	 * 
 	 * @param dataHoraLancamentoAntiga
 	 * @param dataHoraLancamentoNova
+	 * @param usuario 
 	 * @return
 	 */
-	public ResultBaseFactoryTO atualizar(LocalDateTime dataHoraLancamentoAntiga, LocalDateTime dataHoraLancamentoNova)
+	public ResultBaseFactoryTO atualizar(LocalDateTime dataHoraLancamentoAntiga, LocalDateTime dataHoraLancamentoNova, Usuario usuario)
 	{
 		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
 		
 		if (dataHoraLancamentoAntiga != null && dataHoraLancamentoNova != null)
 		{
-			Lancamento lancamentoByDataHoraLancamento = repository.getLancamentoByDataHoraLancamento(dataHoraLancamentoAntiga);
+			Lancamento lancamentoByDataHoraLancamento = repository.getLancamentoByDataHoraLancamentoAndUsuario(dataHoraLancamentoAntiga, usuario);
 			if (lancamentoByDataHoraLancamento != null)
 			{
 				lancamentoByDataHoraLancamento.setDataHoraLancamento(dataHoraLancamentoNova);
@@ -130,13 +135,14 @@ public class LancamentoService
 	
 	/**
 	 * @param dataHoraLancamento
+	 * @param usuario 
 	 * @return
 	 */
-	public ResultBaseFactoryTO delete(LocalDateTime dataHoraLancamento)
+	public ResultBaseFactoryTO delete(LocalDateTime dataHoraLancamento, Usuario usuario)
 	{
 		ResultBaseFactoryTO response = new ResultBaseFactoryTO();
 		
-		Lancamento lancamentoByDataHoraLancamento = repository.getLancamentoByDataHoraLancamento(dataHoraLancamento);
+		Lancamento lancamentoByDataHoraLancamento = repository.getLancamentoByDataHoraLancamentoAndUsuario(dataHoraLancamento, usuario);
 		
 		if (lancamentoByDataHoraLancamento != null)
 		{

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.geovan.Ponto.util.ErrorsEnum;
+
 /***
  * 
  * @author geovan.goes Classe responsavel por padronizar a comunicacao
@@ -150,4 +152,13 @@ public class ResultBaseFactoryTO implements Serializable
 			return resultBaseFactory;
 		}
 	}
+	
+	public static ResultBaseFactoryTO getReponseWithSingleError(ErrorsEnum error) 
+	{
+		Map<String, String> errorMessagesFromSource = new HashMap<>();
+		errorMessagesFromSource.put(""+error.getCode(), error.getMessage());
+		ResultBaseFactoryTO resultBaseFactory = new ResultBaseFactoryTO(null, errorMessagesFromSource , false);
+		return resultBaseFactory;
+	}
+	
 }

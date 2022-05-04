@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import br.com.geovan.Ponto.model.Lancamento;
+import br.com.geovan.Ponto.model.Usuario;
 
 /***
  * 
@@ -19,11 +20,12 @@ public interface LancamentoRepository extends CrudRepository<Lancamento, Long>
 	 * @param dataLancamento
 	 * @return
 	 */
-	Lancamento getLancamentoByDataHoraLancamento(LocalDateTime dataHoraLancamento);
+	Lancamento getLancamentoByDataHoraLancamentoAndUsuario(LocalDateTime dataHoraLancamento, Usuario usuario);
 	
 	/**
 	 * 
+	 * @param usuario 
 	 * @return
 	 */
-	List<Lancamento> findAllByOrderByDataHoraLancamento();
+	List<Lancamento> findAllByUsuarioOrderByDataHoraLancamento(Usuario usuario);
 }

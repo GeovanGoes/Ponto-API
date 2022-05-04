@@ -3,16 +3,20 @@ package br.com.geovan.Ponto.controller;
 import static br.com.geovan.Ponto.util.DateUtil.DEFAULT_PATTERN_FOR_DATE_TIME;
 
 import br.com.geovan.Ponto.exception.EmptyResultException;
+import br.com.geovan.Ponto.model.Usuario;
 import br.com.geovan.Ponto.service.LancamentoService;
+import br.com.geovan.Ponto.service.UsuarioService;
 import br.com.geovan.Ponto.to.Dia;
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 import br.com.geovan.Ponto.util.DateUtil;
+import br.com.geovan.Ponto.util.ErrorsEnum;
 
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,19 +40,27 @@ public class LancamentoController
 	@Autowired
 	LancamentoService service;
 	
+	@Autowired
+	private UsuarioService usuarioService;
+	
 	@PostMapping
-	public ResponseEntity<?> inserir(@RequestParam @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento)
-	{
-		if (dataHoraLancamento == null) {
-			ResultBaseFactoryTO to = new ResultBaseFactoryTO();
-			to.addErrorMessage("Data invalida", "Data invalida");
-			return ResponseEntity.badRequest().body(to.getErrorMessages());
-		}
-		ResultBaseFactoryTO resultBaseFactoryTO = service.inserir(convertDateToLocalDateTime(dataHoraLancamento));
-		if (resultBaseFactoryTO.isSuccess())
-			return ResponseEntity.created(null).build();
-		else
-			return ResponseEntity.badRequest().body(resultBaseFactoryTO.getErrorMessages());
+	public ResponseEntity<?> inserir(@RequestParam(required = true) @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento,
+			@RequestParam(required = true) String email)
+	{		
+		Optional<Usuario> findByEmail = usuarioService.findByEmail(email);
+		if (!findByEmail.isPresent())
+			return ResponseEntity.badRequest().body(ResultBaseFactoryTO.getReponseWithSingleError(ErrorsEnum.USUARIO_NAO_INDENTIFICADO));
+		
+		Usuario usuario = findByEmail.get();
+		try {
+			ResultBaseFactoryTO resultBaseFactoryTO = service.inserir(convertDateToLocalDateTime(dataHoraLancamento), usuario);
+			if (resultBaseFactoryTO.isSuccess())
+				return ResponseEntity.created(null).build();
+			else
+				return ResponseEntity.badRequest().body(resultBaseFactoryTO.getErrorMessages());			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}	
 	}
 
 	/**
@@ -61,10 +73,15 @@ public class LancamentoController
 	}
 	
 	@GetMapping
-	public ResponseEntity<?> listar()
+	public ResponseEntity<?> listar(@RequestParam(required = true) String email)
 	{
 		try {
-			List<Dia> list = service.listar();
+			Optional<Usuario> findByEmail = usuarioService.findByEmail(email);
+			if (!findByEmail.isPresent())
+				return ResponseEntity.badRequest().body(ResultBaseFactoryTO.getReponseWithSingleError(ErrorsEnum.USUARIO_NAO_INDENTIFICADO));
+			
+			Usuario usuario = findByEmail.get();
+			List<Dia> list = service.listar(usuario);
 			return ResponseEntity.ok(list);
 		} catch (EmptyResultException ere) {
 			return ResponseEntity.ok().build();
@@ -74,9 +91,15 @@ public class LancamentoController
 	}
 	
 	@PutMapping
-	public ResponseEntity<?> atualizar(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoAntigo, @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoNovo)
+	public ResponseEntity<?> atualizar(@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoAntigo, @DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamentoNovo, @RequestParam(required = true) String email)
 	{
-		ResultBaseFactoryTO atualizar = service.atualizar(convertDateToLocalDateTime(dataHoraLancamentoAntigo), convertDateToLocalDateTime(dataHoraLancamentoNovo));
+		Optional<Usuario> findByEmail = usuarioService.findByEmail(email);
+		if (!findByEmail.isPresent())
+			return ResponseEntity.badRequest().body(ResultBaseFactoryTO.getReponseWithSingleError(ErrorsEnum.USUARIO_NAO_INDENTIFICADO));
+		
+		Usuario usuario = findByEmail.get();
+		
+		ResultBaseFactoryTO atualizar = service.atualizar(convertDateToLocalDateTime(dataHoraLancamentoAntigo), convertDateToLocalDateTime(dataHoraLancamentoNovo), usuario);
 		
 		if (atualizar.isSuccess())
 			return ResponseEntity.ok().build();
@@ -85,8 +108,15 @@ public class LancamentoController
 	}
 	
 	@DeleteMapping
-	public ResultBaseFactoryTO deletar (@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento)
+	public ResponseEntity<?> deletar (@DateTimeFormat(pattern=DEFAULT_PATTERN_FOR_DATE_TIME) Date dataHoraLancamento, @RequestParam(required = true) String email)
 	{
-		return service.delete(convertDateToLocalDateTime(dataHoraLancamento));
+		Optional<Usuario> findByEmail = usuarioService.findByEmail(email);
+		if (!findByEmail.isPresent())
+			return ResponseEntity.badRequest().body(ResultBaseFactoryTO.getReponseWithSingleError(ErrorsEnum.USUARIO_NAO_INDENTIFICADO));
+		
+		Usuario usuario = findByEmail.get();
+		ResultBaseFactoryTO deleteResponse = service.delete(convertDateToLocalDateTime(dataHoraLancamento), usuario);
+		
+		return ResponseEntity.ok(deleteResponse);
 	}
 }
