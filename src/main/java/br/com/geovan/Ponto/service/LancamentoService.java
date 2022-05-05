@@ -39,7 +39,7 @@ public class LancamentoService
 		if (dataHora != null)
 		{
 			Lancamento exists = repository.getLancamentoByDataHoraLancamentoAndUsuario(dataHora, usuario);
-			if (exists != null) {
+			if (exists == null) {
 				_log.info("inserindo lancamento...");
 				_log.info(dataHora.toString());			
 				Lancamento saved = repository.save(new Lancamento(dataHora, usuario));
