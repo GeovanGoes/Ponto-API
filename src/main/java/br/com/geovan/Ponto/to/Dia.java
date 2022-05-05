@@ -7,7 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,7 +36,7 @@ public class Dia implements Comparable<Dia>
 	@JsonIgnore
 	private LocalTime sum;
 	private String soma;
-	
+	private Integer numeroDaSemana;
 	
 	
 	/**
@@ -47,6 +49,8 @@ public class Dia implements Comparable<Dia>
 		this.lancamentos = lancamentos;
 		this.data = this.localDate.format(datePattern);
 		this.registros = this.lancamentos.stream().map(l -> l.format(timePattern)).collect(Collectors.toList());
+		WeekFields weekFields = WeekFields.of(Locale.getDefault()); 
+		numeroDaSemana = localDate.get(weekFields.weekOfWeekBasedYear());
 		
 		int index = 0;
 		int size = this.lancamentos.size();
@@ -99,6 +103,10 @@ public class Dia implements Comparable<Dia>
 	
 	public String getSoma() {
 		return soma;
+	}
+	
+	public Integer getNumeroDaSemana() {
+		return numeroDaSemana;
 	}
 	
 	@Override
