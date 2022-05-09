@@ -3,11 +3,7 @@
  */
 package br.com.geovan.Ponto;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,26 +12,26 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.geovan.Ponto.controller.LancamentoController;
 import br.com.geovan.Ponto.model.Lancamento;
-import br.com.geovan.Ponto.service.UsuarioService;
-import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
 import br.com.geovan.Ponto.util.DateUtil;
 
 /**
  * @author geovan.goes
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Transactional
 public class LancamentoTests
@@ -45,7 +41,7 @@ public class LancamentoTests
 	
 	DateUtil dateUtil;
 	
-	@Before
+	@BeforeEach
 	public void antes()
 	{
 		dateUtil = new DateUtil();
@@ -55,16 +51,16 @@ public class LancamentoTests
 	public void deveInserirComSucesso()
 	{
 		ResponseEntity<?> response = inserirLancamentoDeAgora();
-		assertNotNull(response);
-		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertNotNull(response);
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
 	@Test
 	public void deveInserirComFalha()
 	{
 		ResponseEntity<?> responseEntity = lancamentosController.inserir(null, null);
-		assertNotNull(responseEntity);
-		assertNotEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+		Assertions.assertNotNull(responseEntity);
+		Assertions.assertNotEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
 		//assertTrue(obterListaDeErrosDoResponse(responseEntity).containsKey("Data invalida"));
 	}
 
@@ -88,13 +84,13 @@ public class LancamentoTests
 	{	
 		inserirLancamentoDeAgora();
 		ResponseEntity<?> responseListar = lancamentosController.listar("geovansilvagoes@gmail.com");
-		assertNotNull(responseListar.getBody());
-		assertTrue(responseListar.getStatusCode().equals(HttpStatus.OK));
+		Assertions.assertNotNull(responseListar.getBody());
+		Assertions.assertTrue(responseListar.getStatusCode().equals(HttpStatus.OK));
 		
 		List<Lancamento> lista = (ArrayList<Lancamento>) responseListar.getBody();
-		assertNotNull(lista);
+		Assertions.assertNotNull(lista);
 		
-		assertNotEquals(0, lista.size());
+		Assertions.assertNotEquals(0, lista.size());
 		
 	}
 
@@ -106,8 +102,8 @@ public class LancamentoTests
 		LocalDateTime dataHoraLancamento = LocalDateTime.now();
 		ResponseEntity<?> response = lancamentosController.inserir(dateUtil.localDateTimeToDate(dataHoraLancamento), "geovansilvagoes@gmail.com");
 		
-		assertNotNull(response);
-		assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		Assertions.assertNotNull(response);
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 		return dataHoraLancamento;
 	}
 	
@@ -118,7 +114,7 @@ public class LancamentoTests
 		
 		ResponseEntity<?> deletarResponse = lancamentosController.deletar(dateUtil.localDateTimeToDate(now), "geovansilvagoes@gmail.com");
 		
-		assertNotNull(deletarResponse);	
+		Assertions.assertNotNull(deletarResponse);	
 	}
 	
 	@Test
@@ -128,7 +124,7 @@ public class LancamentoTests
 		
 		ResponseEntity<?> deletarResponse = lancamentosController.deletar(null, null);
 		
-		assertNotNull(deletarResponse);
+		Assertions.assertNotNull(deletarResponse);
 		//assertFalse(deletarResponse.isSuccess());		
 	}
 	
@@ -140,8 +136,8 @@ public class LancamentoTests
 		
 		ResponseEntity<?> atualizarResponse = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), dateUtil.localDateTimeToDate(now.plusMinutes(1)), "geovansilvagoes@gmail.com");
 		
-		assertNotNull(atualizarResponse);
-		assertEquals(HttpStatus.OK, atualizarResponse.getStatusCode());
+		Assertions.assertNotNull(atualizarResponse);
+		Assertions.assertEquals(HttpStatus.OK, atualizarResponse.getStatusCode());
 	}
 	
 	@Test
@@ -151,9 +147,9 @@ public class LancamentoTests
 		
 		ResponseEntity<?> response = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now), null, null);
 		
-		assertNotNull(response);
-		assertNotNull(response.getBody());
-		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		Assertions.assertNotNull(response);
+		Assertions.assertNotNull(response.getBody());
+		Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		//assertTrue(obterListaDeErrosDoResponse(response).containsKey("parametros invalidos"));
 	}
 	
@@ -164,9 +160,9 @@ public class LancamentoTests
 		
 		ResponseEntity<?> response = lancamentosController.atualizar(dateUtil.localDateTimeToDate(now.plusYears(100)), dateUtil.localDateTimeToDate(now), "geovansilvagoes@gmail.com");
 		
-		assertNotNull(response);
-		assertNotNull(response.getBody());
-		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-		assertTrue(obterListaDeErrosDoResponse(response).containsKey("nao existe um lancamento com a data/hora informada"));
+		Assertions.assertNotNull(response);
+		Assertions.assertNotNull(response.getBody());
+		Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		Assertions.assertTrue(obterListaDeErrosDoResponse(response).containsKey("nao existe um lancamento com a data/hora informada"));
 	}
 }

@@ -5,24 +5,19 @@ package br.com.geovan.Ponto;
 
 import java.util.HashMap;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.geovan.Ponto.to.ResultBaseFactoryTO;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author geovan.goes
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class ResuultBaseFactoryTest
 {
@@ -33,8 +28,8 @@ public class ResuultBaseFactoryTest
 		ResultBaseFactoryTO resultBaseFactoryTO = new ResultBaseFactoryTO();
 		resultBaseFactoryTO.setSuccess(new HashMap<String, Object>());
 		
-		assertNotNull(resultBaseFactoryTO.getResult());
-		assertTrue(resultBaseFactoryTO.isSuccess());
+		Assertions.assertNotNull(resultBaseFactoryTO.getResult());
+		Assertions.assertTrue(resultBaseFactoryTO.isSuccess());
 	}
 	
 	@Test
@@ -43,9 +38,9 @@ public class ResuultBaseFactoryTest
 		ResultBaseFactoryTO resultBaseFactoryTO = new ResultBaseFactoryTO();
 		resultBaseFactoryTO.addErrorMessage("err", "err");
 		
-		assertFalse(resultBaseFactoryTO.isSuccess());
-		assertTrue(resultBaseFactoryTO.getErrorMessages().containsKey("err"));
-		assertEquals(0, resultBaseFactoryTO.getResult().size());
+		Assertions.assertFalse(resultBaseFactoryTO.isSuccess());
+		Assertions.assertTrue(resultBaseFactoryTO.getErrorMessages().containsKey("err"));
+		Assertions.assertEquals(0, resultBaseFactoryTO.getResult().size());
 	}
 	
 }

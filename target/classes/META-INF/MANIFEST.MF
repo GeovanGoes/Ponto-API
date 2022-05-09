@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
-Built-By: Geovan
-Build-Jdk: 15.0.2
+Implementation-Title: ponto
+Implementation-Version: 0.0.1-SNAPSHOT
+Build-Jdk-Spec: 1.8
 Created-By: Maven Integration for Eclipse
 
