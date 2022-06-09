@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.geovan.Ponto.exception.EmptyResultException;
+import br.com.geovan.Ponto.model.Feriado;
 import br.com.geovan.Ponto.model.Lancamento;
 import br.com.geovan.Ponto.model.Usuario;
 import br.com.geovan.Ponto.repository.LancamentoRepository;
@@ -32,6 +34,8 @@ public class LancamentoService
 	
 	@Autowired
 	LancamentoRepository repository;
+	@Autowired
+	private FeriadoService feriadoService;
 
 	public ResultBaseFactoryTO inserir(LocalDateTime dataHora, Usuario usuario)
 	{
@@ -86,7 +90,11 @@ public class LancamentoService
 			Set<Dia> dias = new HashSet<>();
 			
 			lancs.keySet().forEach(key -> {
-				dias.add(new Dia(key, lancs.get(key)));
+				Dia day = new Dia(key, lancs.get(key));
+				Optional<Feriado> optionalFeriado = feriadoService.obterFeriado(day.getLocalDate());
+				if(optionalFeriado.isPresent())
+					day.setFeriado(optionalFeriado.get());
+				dias.add(day);
 			});
 			
 			List<Dia> list = dias.stream().collect(Collectors.toList());

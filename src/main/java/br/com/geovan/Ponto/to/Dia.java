@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.geovan.Ponto.model.Feriado;
 import br.com.geovan.Ponto.util.DateUtil;
 
 /**
@@ -37,6 +38,8 @@ public class Dia implements Comparable<Dia>
 	private LocalTime sum;
 	private String soma;
 	private Integer numeroDaSemana;
+	private boolean feriado;
+	private FeriadoTO dadosFeriado;
 	
 	
 	/**
@@ -107,6 +110,11 @@ public class Dia implements Comparable<Dia>
 	
 	public Integer getNumeroDaSemana() {
 		return numeroDaSemana;
+	}
+	
+	public void setFeriado(Feriado feriado) {
+		this.feriado = true;
+		this.dadosFeriado = new FeriadoTO(feriado.getTipo(), feriado.getNome());
 	}
 	
 	@Override
