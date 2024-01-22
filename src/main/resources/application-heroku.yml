@@ -4,10 +4,6 @@ server:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    initialSize: 1
-    maxActive: 1
-    maxIdle: 1
-    minIdle: 1
     removeAbandoned: true
     url: ${JDBC_DATABASE_URL}
     username: ${JDBC_DATABASE_USERNAME}
