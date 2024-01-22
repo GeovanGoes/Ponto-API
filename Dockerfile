@@ -13,4 +13,4 @@ EXPOSE 8080
 
 COPY --from=build /target/*.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar", "-Dspring.config.location=/src/main/resources/application-heroku.yml"] 
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.location=classpath:/application-heroku.yml"] 
