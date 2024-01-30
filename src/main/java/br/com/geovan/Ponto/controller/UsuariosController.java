@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,5 +32,15 @@ public class UsuariosController
 			return ResponseEntity.ok(new UsuarioTO(optional.get().getNome()));
 		else
 			return ResponseEntity.notFound().build();
+	}
+	
+	@PostMapping
+	public ResponseEntity<?> criarUsuario (@RequestParam(required = true) String email)
+	{
+		Optional<Usuario> optional = service.create(email);
+		if (optional.isPresent())
+			return ResponseEntity.created(null).body(new UsuarioTO(optional.get().getNome()));
+		else
+			return ResponseEntity.badRequest().build();
 	}
 }
